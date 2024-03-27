@@ -43,3 +43,17 @@ texts = [
 # Embed the documents
 result = vo.embed(texts, model="voyage-lite-02-instruct", input_type="document")
 print(result.embeddings)
+
+from pinecone import Pinecone
+
+pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
+
+index = pc.Index("crim-pro-outline")
+
+
+# result.embeddings is a list of lists, so you've gotta turn it into a list of tuples with the ID defined
+vector_tuples = [("id_{}".format(i), result.embeddings[i]) for i in range(len(result.embeddings))]
+
+
+index.upsert(vectors=vector_tuples)
+
