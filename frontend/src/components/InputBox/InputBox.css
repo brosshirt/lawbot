@@ -1,0 +1,19 @@
+.chatbox-input {
+    border: 1px solid gray; /* Borde superior para separarlo de la zona de mensajes */
+    padding: 10px; /* Espacio interior para la comodidad al escribir */
+    display: flex; /* Para alinear el campo de texto y el botón, si decides añadirlo */
+    border-radius: 40px;
+    width: 100%;
+}
+
+
+.chatbox-input textarea {
+    outline: none;
+    width: 100%; 
+    border: none; 
+    padding: 5px; 
+    resize: none; 
+    box-sizing: border-box; 
+    height: 100%; 
+    font-size: 16px; 
+} 
