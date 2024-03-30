@@ -1,6 +1,7 @@
 
 
-export async function getChatResponse(userInput: string){
-    return userInput
-    // This function, in the future, will call our backend
+export async function getChatResponse(userInput: string): Promise<string> {
+    return new Promise((resolve) => {
+        setTimeout(() => resolve(userInput), 3000);
+    });
 }

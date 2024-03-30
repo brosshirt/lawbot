@@ -6,10 +6,9 @@
     width: 100%;
 }
 
-
 .chatbox-input textarea {
     outline: none;
-    width: 100%; 
+    flex: 0 0 95%;
     border: none; 
     padding: 5px; 
     resize: none; 
@@ -17,3 +16,28 @@
     height: 100%; 
     font-size: 16px; 
 } 
+
+.button-container {
+    flex-direction: 0 0 5%;
+    width: 100%;
+    display: grid;
+    place-items: center;
+}
+
+.chatbox-input button {
+    width: 40px;
+    height: 40px;
+    background-color: black; /* Set the background color to white */
+    color: white;
+    font-weight: 900;
+    font-size: larger;
+    border-radius: 20%;
+    border: none; /* Optional: removes the border */
+    cursor: pointer; /* Optional: changes cursor to pointer on hover */
+}
+
+.chatbox-input button:disabled {
+    background-color: #cccccc; /* Light grey to indicate disabled state */
+    color: #666666; /* Darker grey for text to suggest non-interactivity */
+    cursor: default; /* Change cursor to default to indicate it's not clickable */
+}

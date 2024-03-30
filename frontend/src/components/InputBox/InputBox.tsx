@@ -13,7 +13,7 @@ function TextBox({loading, onSend}: TextBoxProps){
 
     const handleKeyDown = (e:any) => {
         if (e.key === 'Enter' && !e.shiftKey) {
-            onSend(e.target.value)
+            onSend(userInput)
         }
     };
 
@@ -26,6 +26,10 @@ function TextBox({loading, onSend}: TextBoxProps){
                 disabled={loading}
                 onKeyDown={handleKeyDown}
             ></textarea>
+            <div className='button-container'>
+                <button disabled={loading} onClick={() => onSend(userInput)}>↑</button>
+            </div>
+            
         </div>
     );
 }
