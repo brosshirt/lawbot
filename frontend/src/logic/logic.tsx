@@ -14,5 +14,8 @@ export async function getChatResponse(userInput: string): Promise<string> {
     }
 
     const data = await response.json(); // or response.json() if your server responds with JSON
+    
+    console.log(data.lebron)
+    
     return data.lebron;
 }
