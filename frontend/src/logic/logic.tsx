@@ -1,6 +1,6 @@
 
 
-export async function getChatResponse(userInput: string): Promise<string> {
+export async function getChatResponse(userInput: string) {
     const response = await fetch('http://127.0.0.1:5000/', {
         method: 'POST', 
         headers: {
@@ -15,7 +15,7 @@ export async function getChatResponse(userInput: string): Promise<string> {
 
     const data = await response.json(); // or response.json() if your server responds with JSON
     
-    console.log(data.lebron)
+    console.log(data.articles)
     
-    return data.lebron;
+    return data;
 }

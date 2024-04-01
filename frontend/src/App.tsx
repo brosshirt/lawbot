@@ -11,9 +11,25 @@ function App() {
 
   const onSend = (userInput: string) => {
     setLoading(true)
+
     
     getChatResponse(userInput).then(response => {
-      setChatResponse(response)
+      
+      let formattedArticles = ""
+
+      for (const article of response.articles){
+        formattedArticles += article.original_text + "\n\n"
+      }
+
+
+
+      const chatResponseAndArticles = `
+        ${response.chatResponse}
+      
+        ${JSON.stringify(formattedArticles)}
+      `
+      
+      setChatResponse(chatResponseAndArticles)
       setLoading(false)
     });
   };

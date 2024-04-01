@@ -66,7 +66,21 @@ def home():
 
     chat_response = chat_completion.choices[0].message.content
 
-    return jsonify({"lebron": chat_response})
+    articles_list = [
+    {
+        "id": match['id'],
+        "score": match['score'],
+        "original_text": match['metadata']['original_text']
+    } 
+    for match in similar_articles['matches']
+    ]
+
+    response = {
+        "chatResponse": chat_response,
+        "articles": articles_list
+    }
+
+    return jsonify(response)
 
 if __name__ == '__main__':
     app.run(debug=True)
