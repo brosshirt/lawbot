@@ -54,7 +54,7 @@ def home():
         messages=[
             {
                 "role": "system",
-                "content": "You're going to receive some excerpts from law school notes along with a question. Your task is to answer the question based on the law school notes. Don't answer with anything that isn't part of the law school notes",
+                "content": "You're going to receive some excerpts of law school notes along with a question. Your task is to provide an answer in markdown that is EXCLUSIVELY based on the law school notes. If the answer is not contained in the notes, say that the answer is not contained in the notes. Do not answer with anything that isn't explicitly contained in the ntoes.",
             },
             {
                 "role": "user",

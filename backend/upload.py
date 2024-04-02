@@ -50,6 +50,9 @@ def load_db():
 
     # result.embeddings is a list of lists, so you've gotta turn it into a list of tuples with the ID defined
 
+
+
+
     vector_tuples = [
         (hash_string(chunks[i]), 
         embeddings[i], 
@@ -57,6 +60,16 @@ def load_db():
         for i in range(len(chunks))
     ]
 
+    # for chunk in chunks:
+    #     print(chunk)
+    #     print('\n\n#####\n\n')
+    # exit(0)
+
+
+    # for tuple in vector_tuples:
+    #     print(tuple[2])
+    #     print('\n\n#####\n\n')
+    # exit(0)
     
     index.upsert(vectors=vector_tuples)
 

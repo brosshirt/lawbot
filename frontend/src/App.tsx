@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import {marked} from 'marked';
 import InputBox from './components/InputBox/InputBox'
 import ChatDisplay from './components/ChatDisplay/ChatDisplay'
 import {getChatResponse} from './logic/logic'
@@ -15,19 +16,18 @@ function App() {
     
     getChatResponse(userInput).then(response => {
       
-      let formattedArticles = ""
+      let formattedArticles = ''
 
       for (const article of response.articles){
-        formattedArticles += article.original_text + "\n\n"
+        console.log(article.id)
+        formattedArticles += article.original_text.replaceAll('\n', '\\n') + '<br><br>#####<br><br>'
       }
 
+      const chatResponseAndArticles = 
+`${marked.parse(response.chatResponse)}
+<h4><strong>Notes</strong></h4>
+${formattedArticles}`
 
-
-      const chatResponseAndArticles = `
-        ${response.chatResponse}
-      
-        ${JSON.stringify(formattedArticles)}
-      `
       
       setChatResponse(chatResponseAndArticles)
       setLoading(false)
