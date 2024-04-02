@@ -1,12 +1,12 @@
 
 
-export async function getChatResponse(userInput: string) {
+export async function getChatResponse(question: string) {
     const response = await fetch('http://127.0.0.1:5000/', {
         method: 'POST', 
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userInput })
+        body: JSON.stringify({ question })
     });
 
     if (!response.ok) {
@@ -14,8 +14,6 @@ export async function getChatResponse(userInput: string) {
     }
 
     const data = await response.json(); // or response.json() if your server responds with JSON
-    
-    console.log(data.articles)
     
     return data;
 }

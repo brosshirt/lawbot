@@ -9,11 +9,11 @@ interface TextBoxProps {
 
 function TextBox({loading, onSend}: TextBoxProps){
 
-    const [userInput, setUserInput] = useState('')
+    const [question, setQuestion] = useState('')
 
     const handleKeyDown = (e:any) => {
         if (e.key === 'Enter' && !e.shiftKey) {
-            onSend(userInput)
+            onSend(question)
         }
     };
 
@@ -21,13 +21,13 @@ function TextBox({loading, onSend}: TextBoxProps){
         <div className='chatbox-input'>
             <textarea 
                 placeholder="Write your question here..."
-                value={userInput}
-                onChange={(e) => setUserInput(e.target.value)}
+                value={question}
+                onChange={(e) => setQuestion(e.target.value)}
                 disabled={loading}
                 onKeyDown={handleKeyDown}
             ></textarea>
             <div className='button-container'>
-                <button disabled={loading} onClick={() => onSend(userInput)}>↑</button>
+                <button disabled={loading} onClick={() => onSend(question)}>↑</button>
             </div>
             
         </div>

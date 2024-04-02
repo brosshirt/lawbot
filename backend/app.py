@@ -1,3 +1,5 @@
+
+# I would really like these import statements to be less disgusting. Ideally I could import from another file or some shit like that
 import os
 
 import voyageai
@@ -17,70 +19,87 @@ CORS(app)  # Enable CORS for all routes
 
 from pinecone import Pinecone
 pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
+index = pc.Index("crim-pro-outline")
+
+# There should be a config or JSON file that contains stuff like the system prompt and the k value. We probably shouldn't be messing with this in the code
+# But I don't know whether it's worthwhile to handle this right now or wait a little bit longer
+SYSTEM_PROMPT = f"""
+    You're going to receive some excerpts of law school notes along with a question. 
+    Your task is to provide an answer in markdown that is EXCLUSIVELY based on the law school notes. 
+    If the answer is not contained in the notes, say that the answer is not contained in the notes. 
+    Do not answer with anything that isn't explicitly contained in the ntoes.
+"""
 
 
-
-
-@app.route('/', methods=['POST'])
-def home():
-    data = request.json
-    userInput = data.get('userInput', '')
-
-    embedding = vo.embed([userInput], model="voyage-lite-02-instruct", input_type="document").embeddings[0]
-
-    index = pc.Index("crim-pro-outline")
-
+# This function always returns all the information we need from the articles as simply as possible
+# It will change as we play around with the metadata more, we should never have to deal with the "metadata" field outside of this function
+def get_articles(embedding, k):
+    # Make pinecone request
     similar_articles = index.query(
         vector=embedding,
-        top_k=3,
-        include_values=True,
+        top_k=k,
+        include_values=False,
         include_metadata=True
-    ).to_dict()
+    ).to_dict()["matches"]
+
+    # Simplest JSON possible
+    return [
+        {
+            "id": article['id'],
+            "score": article['score'],
+            "original_text": article['metadata']['original_text']
+        } 
+    for article in similar_articles]
 
 
-    article_content = [article["metadata"]["original_text"] for article in similar_articles["matches"]]
 
-    
-
+def get_gpt_response(articles, question):
+    # Format user prompt
     user_prompt = f"""
     
-        Notes: {article_content}
+        Notes: {[article['original_text'] for article in articles]}
 
-        Question: {userInput}
+        Question: {question}
     
     """
-
+    # Make openAI request
     chat_completion = client.chat.completions.create(
         messages=[
             {
                 "role": "system",
-                "content": "You're going to receive some excerpts of law school notes along with a question. Your task is to provide an answer in markdown that is EXCLUSIVELY based on the law school notes. If the answer is not contained in the notes, say that the answer is not contained in the notes. Do not answer with anything that isn't explicitly contained in the ntoes.",
+                "content": SYSTEM_PROMPT,
             },
             {
                 "role": "user",
                 "content": user_prompt
             }
         ],
-        model="gpt-4-turbo-preview" # always points to latest gpt-4-turbo-preview model,
+        model="gpt-4-turbo-preview" # always points to latest gpt-4-turbo-preview model
     )
 
-    chat_response = chat_completion.choices[0].message.content
+    return chat_completion.choices[0].message.content
 
-    articles_list = [
-    {
-        "id": match['id'],
-        "score": match['score'],
-        "original_text": match['metadata']['original_text']
-    } 
-    for match in similar_articles['matches']
-    ]
 
-    response = {
-        "chatResponse": chat_response,
-        "articles": articles_list
-    }
 
-    return jsonify(response)
+
+@app.route('/', methods=['POST'])
+def home():
+    # Get user input
+    question = request.json.get('question', '')
+
+    # Embed the question
+    embedding = vo.embed([question], model="voyage-lite-02-instruct", input_type="document").embeddings[0]
+    
+    # Query pinecone and get the articles
+    articles = get_articles(embedding, 3)
+    
+    # Query gpt and get the response
+    gpt_response = get_gpt_response(articles, question)
+    
+    return jsonify({
+        "chatResponse": gpt_response,
+        "articles": articles
+    })
 
 if __name__ == '__main__':
     app.run(debug=True)
