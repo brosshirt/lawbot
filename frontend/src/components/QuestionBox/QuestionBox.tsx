@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
-import './InputBox.css'
+import './QuestionBox.css'
 
-interface TextBoxProps {
+interface QuestionBoxProps {
     loading: boolean
     onSend: (arg1: string) => void
 }
 
 
-function TextBox({loading, onSend}: TextBoxProps){
+function QuestionBox({loading, onSend}: QuestionBoxProps){
 
     const [question, setQuestion] = useState('')
 
@@ -34,4 +34,4 @@ function TextBox({loading, onSend}: TextBoxProps){
     );
 }
 
-export default TextBox;
+export default QuestionBox;
