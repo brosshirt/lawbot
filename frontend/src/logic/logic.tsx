@@ -1,4 +1,4 @@
-
+import {marked} from 'marked';
 
 export async function getLawbotJson(question: string) {
     const response = await fetch('http://127.0.0.1:5000/', {
@@ -17,3 +17,18 @@ export async function getLawbotJson(question: string) {
     
     return data;
 }
+
+export function formatChatResponse(lawbotJson: any){
+    let formattedArticles = ''
+  
+    for (const article of lawbotJson.articles){
+      formattedArticles += article.original_text.replaceAll('\n', '\\n') + '<br><br>#####<br><br>'
+    }
+  
+    const output = 
+  `${marked.parse(lawbotJson.gptResponse)}
+  <h4><strong>Notes</strong></h4>
+  ${formattedArticles}`
+  
+    return output
+  }
