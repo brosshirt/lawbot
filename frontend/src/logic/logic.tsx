@@ -13,7 +13,7 @@ export async function getChatResponse(question: string) {
         throw new Error(`Error: ${response.statusText}`);
     }
 
-    const data = await response.json(); // or response.json() if your server responds with JSON
+    const data = await response.json(); 
     
     return data;
 }

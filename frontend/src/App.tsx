@@ -22,13 +22,13 @@ function App() {
         formattedArticles += article.original_text.replaceAll('\n', '\\n') + '<br><br>#####<br><br>'
       }
 
-      const chatResponseAndArticles = 
-`${marked.parse(response.chatResponse)}
+      const chatResponse = 
+`${marked.parse(response.gptResponse)}
 <h4><strong>Notes</strong></h4>
 ${formattedArticles}`
 
       
-      setChatResponse(chatResponseAndArticles)
+      setChatResponse(chatResponse)
       setLoading(false)
     });
   };

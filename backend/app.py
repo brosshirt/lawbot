@@ -1,85 +1,15 @@
 
-# I would really like these import statements to be less disgusting. Ideally I could import from another file or some shit like that
-import os
-
-import voyageai
-vo = voyageai.Client()
-
-from openai import OpenAI
-client = OpenAI(
-    api_key=os.environ.get("OPENAI_API_KEY")
-)
-
+from lib.services import get_vo_client, get_openai_client, get_pinecone_index, get_articles, get_gpt_response
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
+
+vo_client = get_vo_client()
+openai_client = get_openai_client()
+pinecone_index = get_pinecone_index()
+
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
-
-
-from pinecone import Pinecone
-pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
-index = pc.Index("crim-pro-outline")
-
-# There should be a config or JSON file that contains stuff like the system prompt and the k value. We probably shouldn't be messing with this in the code
-# But I don't know whether it's worthwhile to handle this right now or wait a little bit longer
-SYSTEM_PROMPT = f"""
-    You're going to receive some excerpts of law school notes along with a question. 
-    Your task is to provide an answer in markdown that is EXCLUSIVELY based on the law school notes. 
-    If the answer is not contained in the notes, say that the answer is not contained in the notes. 
-    Do not answer with anything that isn't explicitly contained in the ntoes.
-"""
-
-
-# This function always returns all the information we need from the articles as simply as possible
-# It will change as we play around with the metadata more, we should never have to deal with the "metadata" field outside of this function
-def get_articles(embedding, k):
-    # Make pinecone request
-    similar_articles = index.query(
-        vector=embedding,
-        top_k=k,
-        include_values=False,
-        include_metadata=True
-    ).to_dict()["matches"]
-
-    # Simplest JSON possible
-    return [
-        {
-            "id": article['id'],
-            "score": article['score'],
-            "original_text": article['metadata']['original_text']
-        } 
-    for article in similar_articles]
-
-
-
-def get_gpt_response(articles, question):
-    # Format user prompt
-    user_prompt = f"""
-    
-        Notes: {[article['original_text'] for article in articles]}
-
-        Question: {question}
-    
-    """
-    # Make openAI request
-    chat_completion = client.chat.completions.create(
-        messages=[
-            {
-                "role": "system",
-                "content": SYSTEM_PROMPT,
-            },
-            {
-                "role": "user",
-                "content": user_prompt
-            }
-        ],
-        model="gpt-4-turbo-preview" # always points to latest gpt-4-turbo-preview model
-    )
-
-    return chat_completion.choices[0].message.content
-
-
 
 
 @app.route('/', methods=['POST'])
@@ -88,16 +18,16 @@ def home():
     question = request.json.get('question', '')
 
     # Embed the question
-    embedding = vo.embed([question], model="voyage-lite-02-instruct", input_type="document").embeddings[0]
+    embedding = vo_client.embed([question], model="voyage-lite-02-instruct", input_type="document").embeddings[0]
     
     # Query pinecone and get the articles
-    articles = get_articles(embedding, 3)
+    articles = get_articles(embedding, 3, pinecone_index)
     
     # Query gpt and get the response
-    gpt_response = get_gpt_response(articles, question)
+    gpt_response = get_gpt_response(articles, question, openai_client)
     
     return jsonify({
-        "chatResponse": gpt_response,
+        "gptResponse": gpt_response,
         "articles": articles
     })
 
