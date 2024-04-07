@@ -1,7 +1,7 @@
 import {marked} from 'marked';
 
 export async function getLawbotJson(question: string) {
-    const response = await fetch('http://127.0.0.1:5000/', {
+    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}`, {
         method: 'POST', 
         headers: {
             'Content-Type': 'application/json',
