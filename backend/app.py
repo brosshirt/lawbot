@@ -29,7 +29,7 @@ def home():
     question = request.json.get('question', '')
 
     # Embed the question
-    embedding = vo_client.embed([question], model="voyage-lite-02-instruct", input_type="document").embeddings[0]
+    embedding = vo_client.embed([question], model="voyage-lite-02-instruct", input_type="query", truncation=False).embeddings[0]
     
     # Query pinecone and get the articles
     articles = get_articles(embedding, 3, pinecone_index)
