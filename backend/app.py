@@ -23,8 +23,8 @@ def static_proxy(path):
     return send_from_directory(app.static_folder, path)
 
 # API
-@app.route('/', methods=['POST'])
-def home():
+@app.route('/chat', methods=['POST'])
+def chat():
     # Get user input
     question = request.json.get('question', '')
 
@@ -32,15 +32,37 @@ def home():
     embedding = vo_client.embed([question], model="voyage-lite-02-instruct", input_type="query", truncation=False).embeddings[0]
     
     # Query pinecone and get the articles
-    articles = get_articles(embedding, 3, pinecone_index)
-    
-    # Query gpt and get the response
+    articles = get_articles(embedding, 3, pinecone_index)    
+
+
+    # Query gpt and get the response (This part gets skipped now)
     gpt_response = get_gpt_response(articles, question, openai_client)
     
     return jsonify({
         "gptResponse": gpt_response,
         "articles": articles
     })
+
+# API
+@app.route('/search', methods=['POST'])
+def search():
+    # Get user input
+    question = request.json.get('question', '')
+
+    # Embed the question
+    embedding = vo_client.embed([question], model="voyage-lite-02-instruct", input_type="query", truncation=False).embeddings[0]
+    
+    # Query pinecone and get the articles
+    articles = get_articles(embedding, 5, pinecone_index)   
+
+    print(articles) 
+
+    
+    return jsonify({
+        "articles": articles
+    })
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

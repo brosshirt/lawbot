@@ -1,7 +1,11 @@
 import {marked} from 'marked';
+import { Article } from '../interfaces/interfaces';
 
-export async function getLawbotJson(question: string) {
-    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}`, {
+
+
+
+export async function getRelevantArticles(question: string): Promise<Article[]> {
+    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/search`, {
         method: 'POST', 
         headers: {
             'Content-Type': 'application/json',
@@ -15,7 +19,7 @@ export async function getLawbotJson(question: string) {
 
     const data = await response.json(); 
     
-    return data;
+    return data.articles;
 }
 
 export function formatChatResponse(lawbotJson: any){
@@ -32,3 +36,25 @@ export function formatChatResponse(lawbotJson: any){
   
     return output
   }
+
+export function formatSearchResponse(lawbotJson: any){
+  let formattedArticles = ''
+
+  for (const article of lawbotJson.articles){
+    let text = `${article.original_text.substring(0, 100).replaceAll('\n', ' ')}`
+
+
+    
+
+
+    
+    
+    formattedArticles += text + '<br><br>#####<br><br>'
+  }
+
+  const output = 
+`<h4><strong>Notes</strong></h4>
+${formattedArticles}`
+
+  return output
+}

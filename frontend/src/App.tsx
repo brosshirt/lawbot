@@ -1,22 +1,28 @@
 import React, { useState } from 'react'
 import QuestionBox from './components/QuestionBox/QuestionBox'
 import ChatDisplay from './components/ChatDisplay/ChatDisplay'
-import {getLawbotJson, formatChatResponse} from './logic/logic'
+import SearchDisplay from './components/SearchDisplay/SearchDisplay'
+import {getRelevantArticles, formatSearchResponse} from './logic/logic'
+import { Article } from './interfaces/interfaces';
 import './App.css';
-
 
 function App() {
 
-  const [chatResponse, setChatResponse] = useState('')
+
+  // You should be passing html to the chatDisplay I guess
+  const [relevantArticles, setRelevantArticles] = useState<Article[]>([])
   const [loading, setLoading] = useState(false)
 
   const onSend = async (question: string) => {
     setLoading(true)
 
     // Response from backend
-    const lawbotJson = await getLawbotJson(question)
+    const chunks: Article[] = await getRelevantArticles(question)
     
-    setChatResponse(formatChatResponse(lawbotJson))
+    console.log(chunks)
+
+    // setSearchResponse(formatSearchResponse(lawbotJson))
+    setRelevantArticles(chunks)
     setLoading(false)
   };
 
@@ -24,7 +30,7 @@ function App() {
   return (
     <div className='chatpage'> 
       <div></div> 
-      <ChatDisplay chatResponse={chatResponse}/>
+      <SearchDisplay articles={relevantArticles}/>
       <QuestionBox loading={loading} onSend={onSend}/>
     </div>
   );
