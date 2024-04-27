@@ -6,15 +6,16 @@ import './SearchDisplay.css'
 
 interface SearchDisplayProps {
     articles: Article[];
+    searchSourceText: (text: string) => void 
 }
 
-function SearchDisplay({ articles }: SearchDisplayProps) {
+function SearchDisplay({ articles, searchSourceText }: SearchDisplayProps) {
     console.log('articles', articles)
     
     return (
         <div className="chat-display">
             {articles.map((article,index) => (
-                <Snippet key={index} article={article}/>
+                <Snippet key={index} article={article} searchSourceText={searchSourceText}/>
             ))}
         </div>
     )

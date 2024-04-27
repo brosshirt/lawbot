@@ -1,8 +1,8 @@
-.chatpage {
-  display: grid;
-  grid-template-rows: 20% 60% 20%; /* Define el tamaño de cada fila */
-  place-items: center;
-  height: 100vh;
-  width: 60%;
-  margin: auto;
+.app{
+  display: flex;
+}
+
+.app > * {
+  width: 50%;
+  padding: 10px;
 }

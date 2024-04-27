@@ -6,29 +6,25 @@ import './Snippet.css'
 
 interface SnippetProps {
     article: Article;
+    searchSourceText: (text: string) => void 
 }
 
 function cleanText(original_text: string): string {
     return original_text.replaceAll('\n', ' ')
 }
 
-function searchSourceText(event: React.MouseEvent<HTMLDivElement>){
-    const text = event.currentTarget.textContent
-    
-    // In the future we're going to need to update some state variable that's going to affect how the second half of this UI works. 
-
-
-
-    console.log(text)
-}
-
-function Snippet({ article }: SnippetProps) {
+function Snippet({ article, searchSourceText }: SnippetProps) {
     
     const text = cleanText(article.original_text)
 
+    const search = (event: React.MouseEvent<HTMLDivElement>) => {
+        const text = event.currentTarget.textContent as string
+        searchSourceText(text)
+    } 
+
 
     return (
-        <div className="snippet" onClick={searchSourceText}><p>{text}</p></div>
+        <div className="snippet" onClick={search}><p>{text}</p></div>
     );
 }
 

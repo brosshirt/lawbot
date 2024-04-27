@@ -3,6 +3,7 @@
 # Node
 frontend/node_modules/
 frontend/build/
+frontend/public/notes/
 
 # Python
 backend/venv/
