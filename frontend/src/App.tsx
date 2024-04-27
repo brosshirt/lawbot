@@ -10,7 +10,7 @@ import './App.css';
 
 function App() {
 
-  const [ctrlF, setCtrlF] = useState<String>('')
+  const [ctrlF, setCtrlF] = useState<string>('')
 
   const searchSourceText = (text: string) => {
     setCtrlF(text)
@@ -20,7 +20,7 @@ function App() {
   return (
     <div className='app'>
       <ChatPage searchSourceText={searchSourceText}/>
-      <PDFDisplay/>
+      <PDFDisplay ctrlF={ctrlF}/>
     </div> 
   );
 }

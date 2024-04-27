@@ -6,10 +6,12 @@ So we're done with the chatbot, now it's a search tool. Basically you ask a ques
 
 ## Current State
 
-The left side of the screen is done, more or less. 
+You can search the notes for something, click on the chunks, and then see that chunk in context.
 
-The next step is to build the right side of the screen, which is just going to be a text editor that displays a word document and has the capability of ctrl-fing. 
+The PDF API is not great, I probably would've saved time had I just made a custom solution. It's a good exercise though.
 
 ## Current task
 
-The screen should have a left and right side, when you click on one of the chunks it should display the chunk you clicked on on the left side. 
+1. Disable the toolbar permanently
+2. Add the functionality to change the width of the two halves
+3. Change the zoom default, it's too zoomed out
