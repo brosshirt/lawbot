@@ -3,6 +3,6 @@
     grid-template-rows: 20% 60% 20%; /* Define el tamaño de cada fila */
     place-items: center;
     height: 100vh;
-    width: 60%;
+    width: 90%;
     margin: auto;
 }

@@ -2,7 +2,21 @@
   display: flex;
 }
 
-.app > * {
-  width: 50%;
-  padding: 10px;
+
+.chat{
+  width:50%;
 }
+.pdf{
+  width:50%;
+}
+
+.divider {
+  width: .5%;
+  background-color:black;
+  height: 100vh;
+}
+
+.divider:hover {
+  cursor: ew-resize;
+}
+

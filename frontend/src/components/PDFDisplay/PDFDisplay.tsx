@@ -27,6 +27,7 @@ function PDFDisplay({ctrlF}:PDFDisplayProps){
 
     // This is the only code I can find that survives the double render from strict mode: https://stackoverflow.com/a/77496914
     useEffect(() => {
+
         const callView = async () => {
           try {
             setInstance(await WebViewer(
@@ -37,8 +38,6 @@ function PDFDisplay({ctrlF}:PDFDisplayProps){
               },
               viewer.current!
             ))
-            // const { Core, UI } = docx;
-            // const { documentViewer, annotationManager, Annotations, Tools } = Core;
           } catch (error) {
             console.log('viewer error ==> ', error)
           }
@@ -46,10 +45,24 @@ function PDFDisplay({ctrlF}:PDFDisplayProps){
         callView()
       }, []);
 
+    const searchListener = (searchPattern:string, options:object, results:Array<object>) => {
+        // If the results array is empty, it's probably because of a page break, so run the search again with a substring, this will cause recursion
+        if (results.length == 0 && searchPattern.length > 10){
+            const newSearchPattern = searchPattern.slice(0, searchPattern.length - 50)
+            instance.UI.searchTextFull(newSearchPattern, searchOptions);
+        }
+    };
 
-    const searchDoc = () => {
+    // Configure the instance after it's initialied
+    useEffect(() => {
+        if (instance){
+            instance.UI.disableElements(['searchPanel']);
+            instance.UI.setZoomLevel('100%');
+            instance.UI.addSearchListener(searchListener);
+        }
+    },[instance])
 
-    }
+
 
     useEffect(() => {
         if (instance) {
@@ -57,13 +70,6 @@ function PDFDisplay({ctrlF}:PDFDisplayProps){
         }
     },[ctrlF])
 
-    
-
-
-      
-
-
-  
     return (
         <div className="webviewer" ref={viewer} style={{height: "100vh"}}></div>
     );

@@ -22,8 +22,6 @@ function ChatPage({searchSourceText}: ChatPageProps) {
     // Response from backend
     const chunks: Article[] = await getRelevantArticles(question)
     
-    console.log(chunks)
-
     // setSearchResponse(formatSearchResponse(lawbotJson))
     setRelevantArticles(chunks)
     setLoading(false)
