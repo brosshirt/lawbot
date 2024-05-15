@@ -6,10 +6,13 @@ So we're done with the chatbot, now it's a search tool. Basically you ask a ques
 
 ## Current State
 
-You can search the notes for something, click on the chunks, and then see that chunk in context. You can also change the width of the two panes, albeit with some bugs when you try to make the left side larger (the PDF API is causing problems again)
-
-The PDF API is not great, I probably would've saved time had I just made a custom solution. It's a good exercise though. Yeah in the future I'm going to get need to get off of it now that I see it's making it impossible to implement the VSCode style divider.
+It's a working version, I want to see if Nick is going to complain about something and then figure out what to do from there. Eventually we should probably get rid of this pdftron api.
 
 ## Current task
 
-1. Figure out how to handle the ctrlF over a page break
+1. Get feedback
+
+## Backlog
+
+1. Fix potential bugs with the ctrl-f issue, like if the chunk has 1 character on one page and 699 characters on the other
+2. Abandon the pdf api
