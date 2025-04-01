@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, SetStateAction, useEffect  } from 'react'
 import { Article } from '../../interfaces/interfaces';
 import './Snippet.css'
 
@@ -6,25 +6,43 @@ import './Snippet.css'
 
 interface SnippetProps {
     article: Article;
-    searchSourceText: (text: string) => void 
+    ctrlF: string;
+    setCtrlF: React.Dispatch<SetStateAction<string>>
 }
 
 function cleanText(original_text: string): string {
     return original_text.replaceAll('\n', ' ')
 }
 
-function Snippet({ article, searchSourceText }: SnippetProps) {
+function Snippet({ article, ctrlF, setCtrlF }: SnippetProps) {
     
-    const text = cleanText(article.original_text)
+    const [innerHtml, setInnerHtml] = useState<{ __html: string }>({__html: cleanText(article.original_text)}) 
 
     const search = (event: React.MouseEvent<HTMLDivElement>) => {
         const text = event.currentTarget.textContent as string
-        searchSourceText(text)
+        setCtrlF(text)
     } 
 
 
+    useEffect(() => {
+        if (!ctrlF){
+            return
+        }
+
+        const plainText = cleanText(article.original_text)
+
+        const highLightedCtrlF = plainText.replace(ctrlF, `<span style="background-color: #f4cea3"> ${ctrlF} </span>`)
+
+        
+        setInnerHtml({__html: highLightedCtrlF})
+    }, [ctrlF])
+
+
+
+
+
     return (
-        <div className="snippet" onClick={search}><p>{text}</p></div>
+        <div className="snippet" onClick={search}><p dangerouslySetInnerHTML={innerHtml}/></div>
     );
 }
 

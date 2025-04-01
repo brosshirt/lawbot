@@ -1,18 +1,17 @@
-import React, {useState, useRef, useEffect} from 'react'
+import React, {useState, useRef, useEffect, SetStateAction} from 'react'
 import './PDFDisplay.css'
 import WebViewer from '@pdftron/webviewer'
 
 interface PDFDisplayProps {
     ctrlF: string
+    setCtrlF: React.Dispatch<SetStateAction<string>>
 }
 
 
 
 
-function PDFDisplay({ctrlF}:PDFDisplayProps){
+function PDFDisplay({ctrlF, setCtrlF}:PDFDisplayProps){
     const viewer = useRef<HTMLDivElement>(null);
-
-    const searchText = "seizures"
 
     const searchOptions = {
         caseSensitive: false,  // match case
@@ -48,12 +47,11 @@ function PDFDisplay({ctrlF}:PDFDisplayProps){
     const searchListener = (searchPattern:string, options:object, results:Array<object>) => {
         // If the results array is empty, it's probably because of a page break, so run the search again with a substring, this will cause recursion
         if (results.length == 0 && searchPattern.length > 10){
-            const newSearchPattern = searchPattern.slice(0, searchPattern.length - 50)
-            instance.UI.searchTextFull(newSearchPattern, searchOptions);
-        }
+          setCtrlF(searchPattern.slice(0, searchPattern.length - 50)) // this will trigger another search
+        } 
     };
 
-    // Configure the instance after it's initialied
+    // Configure the instance after it's initialized
     useEffect(() => {
         if (instance){
             instance.UI.disableElements(['searchPanel']);
@@ -72,6 +70,7 @@ function PDFDisplay({ctrlF}:PDFDisplayProps){
 
     return (
         <div className="webviewer" ref={viewer} style={{height: "100vh"}}></div>
+        // <div>hello</div>
     );
   };
 

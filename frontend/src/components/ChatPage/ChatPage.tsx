@@ -1,29 +1,27 @@
-import React, { useState } from 'react'
+import React, { useState, SetStateAction } from 'react'
 import QuestionBox from '../QuestionBox/QuestionBox'
 import ChatDisplay from '../ChatDisplay/ChatDisplay'
-import SearchDisplay from '../SearchDisplay/SearchDisplay'
-import {getRelevantArticles, formatSearchResponse} from '../../logic/logic'
-import { Article } from '../../interfaces/interfaces';
+import {getRelevantArticles, getChat} from '../../logic/logic'
+import { Article, ChatResponse } from '../../interfaces/interfaces';
 import './ChatPage.css';
 
 
 interface ChatPageProps {
-    searchSourceText: (text: string) => void 
+    ctrlF: string
+    setCtrlF: React.Dispatch<SetStateAction<string>>
 }
 
-function ChatPage({searchSourceText}: ChatPageProps) {
-
-  const [relevantArticles, setRelevantArticles] = useState<Article[]>([])
+function ChatPage({ctrlF, setCtrlF}: ChatPageProps) {
+  const [chatResponse, setChatResponse] = useState<ChatResponse>()
   const [loading, setLoading] = useState(false)
 
   const onSend = async (question: string) => {
     setLoading(true)
 
-    // Response from backend
-    const chunks: Article[] = await getRelevantArticles(question)
+    const chatResponse = await getChat(question) 
     
     // setSearchResponse(formatSearchResponse(lawbotJson))
-    setRelevantArticles(chunks)
+    setChatResponse(chatResponse)
     setLoading(false)
   };
 
@@ -31,7 +29,7 @@ function ChatPage({searchSourceText}: ChatPageProps) {
   return (
     <div className='chatpage'> 
       <div></div> 
-      <SearchDisplay articles={relevantArticles} searchSourceText={searchSourceText}/>
+      <ChatDisplay chatResponse={chatResponse} ctrlF={ctrlF} setCtrlF={setCtrlF}/>
       <QuestionBox loading={loading} onSend={onSend}/>
     </div>
   );

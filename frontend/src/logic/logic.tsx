@@ -1,5 +1,5 @@
 import {marked} from 'marked';
-import { Article } from '../interfaces/interfaces';
+import { Article, ChatResponse } from '../interfaces/interfaces';
 
 
 
@@ -22,6 +22,25 @@ export async function getRelevantArticles(question: string): Promise<Article[]> 
     return data.articles;
 }
 
+export async function getChat(question: string): Promise<ChatResponse> {
+  const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/chat`, {
+      method: 'POST', 
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ question })
+  });
+
+  if (!response.ok) {
+      throw new Error(`Error: ${response.statusText}`);
+  }
+
+  const data = await response.json(); 
+  
+  return data;
+}
+
+
 export function formatChatResponse(lawbotJson: any){
     let formattedArticles = ''
   
@@ -43,12 +62,6 @@ export function formatSearchResponse(lawbotJson: any){
   for (const article of lawbotJson.articles){
     let text = `${article.original_text.substring(0, 100).replaceAll('\n', ' ')}`
 
-
-    
-
-
-    
-    
     formattedArticles += text + '<br><br>#####<br><br>'
   }
 
